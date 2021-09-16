@@ -35,13 +35,13 @@ header {
     color: rgb(240, 185, 114);
 }
 
-.title-page {
+main {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.title-page * {
+main * {
     margin: 20px;
 }
 

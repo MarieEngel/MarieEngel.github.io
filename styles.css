@@ -11,30 +11,24 @@ body {
 }
 
 li {
-    float: right;
-    align-content: center;
-    font-family: "Montserrat", sans-serif;
     font-size: 20px;
     font-weight: 600;
-    color: cornsilk;
     text-transform: uppercase;
 }
 
 header {
     background-color: #79B4B7;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     padding: 30px 10%;
 }
 
 .nav-links {
     list-style: none;
+    display: flex;
+    justify-content: flex-end;
 }
 
-.nav-links li {
-    display: inline-block;
-    padding: 0px 20px;
+.nav-links * {
+    margin: 5px;
 }
 
 .nav-links li a:hover {

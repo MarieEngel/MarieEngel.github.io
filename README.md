@@ -6,7 +6,6 @@ The App is an ... especially made for ... Besides The App can help to... and... 
 
 
 ## Development Setup
-
 Use VS Code with the following extensions: 
 -
 -

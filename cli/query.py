@@ -16,7 +16,7 @@ from datetime import datetime
 name_input = input("What is your user name?  ")
 if name_input != None:
     print(
-        f"Hello, {name_input}! \nWhat would you like to do? \n1. List items by warehouse \n2. Search an item and place an order \n3. Quit"
+        f"Hello, {name_input}! \nWhat would you like to do? \n1. List items by warehouse \n2. Search an item and place an order \n3. Browse by Category \n4. Quit"
     )
 # while loop to come back to operation selection after operation 1 or 2
 operation_input = None  #  condition variable needs to be defined before the loop
@@ -102,8 +102,36 @@ while operation_input != 3:
         else:
             print("Location: Not in stock")
 
-    # Else, if they pick 3
+    # Else if they pick 3: browse by category
     elif operation_input == 3:
+        categories = {}
+        for item in stock:
+            key = item["category"]
+            if key not in categories:
+                categories[key] = 1
+            else:
+                categories[key] += 1
+
+        categories_list = []
+        for pair in categories.items():
+            categories_list.append(pair)
+
+        for (i, category) in enumerate(categories_list, start=1):
+            print(f"{i}. {category[0]} ({category[1]})")
+
+        choice_input = int(input("Type the number of the category to browse: "))
+
+        chosen_category = categories_list[(choice_input - 1)]
+        print(f"List of '{chosen_category[0]}' available: ")
+
+        for item in stock:
+            if item["category"] == chosen_category[0]:
+                print(
+                    f"{item['state']} {item['category']}, Warehouse {item['warehouse']}"
+                )
+
+    # Else, if they pick 4
+    elif operation_input == 4:
         pass  # to avoid having  "Thanks for your visit" displayed twice
     else:
         print("Sorry, the operation entered is not valid.")

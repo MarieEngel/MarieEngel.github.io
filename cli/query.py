@@ -43,7 +43,7 @@ while operation_input != 3:
         # total amount of items in stock on each warehouse:
 
         print(f"Total amount of items in Warehouse 1: {len(result_w1)}")
-        print(f"Total amount of items in Warehouse 2: {len(result_w2)} ")
+        print(f"Total amount of items in Warehouse 2: {len(result_w2)}")
 
     # # Else, if they pick 2
     ### Make case insensitive:
@@ -66,22 +66,14 @@ while operation_input != 3:
             print(f"Amount available: {sum_available}")
             print("Location:")
             current_date = datetime.today().date()
-            for item in available_w1:
+            for item in available_w1 + available_w2:
                 days = (
                     current_date
                     - datetime.strptime(
                         item["date_of_stock"], "%Y-%m-%d %H:%M:%S"
                     ).date()
                 ).days
-                print(f"- Warehouse 1 (in stock for {days} days)")
-            for item in available_w2:
-                days = (
-                    current_date
-                    - datetime.strptime(
-                        item["date_of_stock"], "%Y-%m-%d %H:%M:%S"
-                    ).date()
-                ).days
-                print(f"- Warehouse 2 (in stock for {days} days)")
+                print(f"- Warehouse {item['warehouse']} (in stock for {days} days)")
 
             if sum_w1 > 0 and sum_w2 > 0:
                 if sum_w1 > sum_w2:  # maximum

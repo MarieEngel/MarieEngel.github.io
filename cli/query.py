@@ -54,6 +54,11 @@ while operation_input != 3:
         for item in result_w2:
             print(f"- {item['state']} {item['category']}")
 
+        # total amount of items in stock on each warehouse:
+
+        print(f"Total amount of items in Warehouse 1: {len(result_w1)}")
+        print(f"Total amount of items in Warehouse 2:{len(result_w2)} ")
+
     # # Else, if they pick 2
 
     elif operation_input == 2:

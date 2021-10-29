@@ -60,13 +60,13 @@ while operation_input != 3:
         print(f"Total amount of items in Warehouse 2:{len(result_w2)} ")
 
     # # Else, if they pick 2
-
+    ### Make case insensitive:
     elif operation_input == 2:
         item_input = input("What is the name of the item?  ")
         available_w1 = 0
         available_w2 = 0
         for item in stock:
-            if item_input == f"{item['state']} {item['category']}":
+            if item_input.lower() == f"{item['state']} {item['category']}".lower():
                 if item["warehouse"] == 1:
                     available_w1 += 1
                 if item["warehouse"] == 2:

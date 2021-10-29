@@ -9,7 +9,8 @@ for item in warehouse1:
     # The `item` name will contain each of the strings (item names) in the list.
 """
 
-from data import warehouse1, warehouse2
+from data import stock
+from collections import Counter
 
 # YOUR CODE STARTS HERE
 
@@ -29,54 +30,81 @@ while operation_input != 3:
 
     # If they pick 1
     # bullet list
+    # if operation_input == 1:
+    #     print("Items in Warehouse 1:")
+    #     for item in warehouse1:
+    #         print(f"- {item}")
+    #     print()
+    #     print("Items in Warehouse 2:")
+    #     for item in warehouse2:
+    #         print(f"- {item}")
     if operation_input == 1:
-        print("Items in Warehouse 1:")
-        for item in warehouse1:
-            print(f"- {item}")
+        result_w1 = []
+        result_w2 = []
+        for item in stock:
+            if item["warehouse"] == 1:
+                result_w1.append(item)
+            if item["warehouse"] == 2:
+                result_w2.append(item)
+        print("Warehouse 1: ")
+        for item in result_w1:
+            print(f"- {item['state']} {item['category']}")
         print()
-        print("Items in Warehouse 2:")
-        for item in warehouse2:
-            print(f"- {item}")
+        print("Warehouse 2: ")
+        for item in result_w2:
+            print(f"- {item['state']} {item['category']}")
 
-    # Else, if they pick 2
+    # # Else, if they pick 2
+
     elif operation_input == 2:
         item_input = input("What is the name of the item?  ")
+        available_w1 = 0
+        available_w2 = 0
+        for item in stock:
+            if item_input == f"{item['state']} {item['category']}":
+                if item["warehouse"] == 1:
+                    available_w1 += 1
+                if item["warehouse"] == 2:
+                    available_w2 += 1
 
-        available_wh1 = 0
-        available_wh2 = 0
+        sum_available = available_w2 + available_w2
 
-        # count items in warehouse1:
-        for item in warehouse1:
-            if item == item_input:
-                available_wh1 += 1
+        # old code:
+        #         available_wh1 = 0
+        #         available_wh2 = 0
 
-        # count items in warehouse2:
-        for item in warehouse2:
-            if item == item_input:
-                available_wh2 += 1
+        #         # count items in warehouse1:
+        #         for item in warehouse1:
+        #             if item == item_input:
+        #                 available_wh1 += 1
 
-        # sum of available items
-        available = available_wh1 + available_wh2
+        #         # count items in warehouse2:
+        #         for item in warehouse2:
+        #             if item == item_input:
+        #                 available_wh2 += 1
 
-        # give the location of the item or "Not in stock"
-        if available > 0:  # both warehouses
-            print(f"Amount available: {available}")
-            if available_wh1 > 0 and available_wh2 > 0:
+        #         # sum of available items
+        #         available = available_wh1 + available_wh2
+
+        #         # give the location of the item or "Not in stock"
+        if sum_available > 0:  # both warehouses
+            print(f"Amount available: {sum_available}")
+            if available_w1 > 0 and available_w2 > 0:
                 print("Location: Both warehouses")
-                if available_wh1 > available_wh2:  # maximum
+                if available_w1 > available_w2:  # maximum
                     print(
-                        f"Maximum availability: {max(available_wh1, available_wh2)} in Warehouse1"
+                        f"Maximum availability: {max(available_w1, available_w2)} in Warehouse1"
                     )
-                elif available_wh1 < available_wh2:
+                elif available_w1 < available_w2:
                     print(
-                        f"Maximum availability: {max(available_wh1, available_wh2)} in Warehouse2"
+                        f"Maximum availability: {max(available_w1, available_w2)} in Warehouse2"
                     )
                 else:
                     print(
                         f"Both warehouses have the same amount of {item_input} in stock."
                     )
 
-            elif available_wh1 > 0:  # warehouse1 or warehouse#
+            elif available_w1 > 0:  # warehouse1 or warehouse#
                 print("Location: Warehouse1")
             else:
                 print("Location: Warehouse2")
@@ -88,12 +116,14 @@ while operation_input != 3:
                 order_amount = int(
                     input(f"How many {item_input} would you like to order?  ")
                 )
-                if order_amount > available:
+                if order_amount > sum_available:
                     order_amount_correction = input(
                         f"Sorry, your order is exceeding our stock. Would you like to order {available} {item_input} (y/n)? "
                     )
                     if order_amount_correction == "y":
-                        print(f"Your order has been placed: {available} {item_input}")
+                        print(
+                            f"Your order has been placed: {sum_available} {item_input}"
+                        )
                 else:
                     print(f"Your order has been placed: {order_amount} {item_input}")
         else:
@@ -111,23 +141,23 @@ print()
 print(f"Thanks for your visit, {name_input}!")
 
 
-# print(len(warehouse1))
-# print(warehouse1[-1])
-# print(len(warehouse2))
-# print(warehouse1[0])
-# print(warehouse1[0])
-# print(type(warehouse1[0]))
+# # print(len(warehouse1))
+# # print(warehouse1[-1])
+# # print(len(warehouse2))
+# # print(warehouse1[0])
+# # print(warehouse1[0])
+# # print(type(warehouse1[0]))
 
-# Greet the user
+# # Greet the user
 
-# Show the menu and ask to pick a choice
+# # Show the menu and ask to pick a choice
 
-# If they pick 1
-#
-# Else, if they pick 2
-#
-# Else, if they pick 3
-#
-# Else
+# # If they pick 1
+# #
+# # Else, if they pick 2
+# #
+# # Else, if they pick 3
+# #
+# # Else
 
-# Thank the user for the visit
+# # Thank the user for the visit

@@ -10,7 +10,7 @@ for item in warehouse1:
 """
 
 from data import stock
-from collections import Counter
+from datetime import datetime
 
 
 name_input = input("What is your user name?  ")
@@ -49,58 +49,66 @@ while operation_input != 3:
     ### Make case insensitive:
     elif operation_input == 2:
         item_input = input("What is the name of the item?  ")
-        available_w1 = 0
-        available_w2 = 0
+        available_w1 = []
+        available_w2 = []
         for item in stock:
             if item_input.lower() == f"{item['state']} {item['category']}".lower():
                 if item["warehouse"] == 1:
-                    available_w1 += 1
+                    available_w1.append(item)
                 if item["warehouse"] == 2:
-                    available_w2 += 1
+                    available_w2.append(item)
 
-        sum_available = available_w1 + available_w2
+        sum_w1 = len(available_w1)
+        sum_w2 = len(available_w2)
+        sum_available = sum_w1 + sum_w2
 
         if sum_available > 0:  # both warehouses
             print(f"Amount available: {sum_available}")
-            if available_w1 > 0 and available_w2 > 0:
-                print("Location: Both warehouses")
-                if available_w1 > available_w2:  # maximum
-                    print(
-                        f"Maximum availability: {max(available_w1, available_w2)} in Warehouse1"
-                    )
-                elif available_w1 < available_w2:
-                    print(
-                        f"Maximum availability: {max(available_w1, available_w2)} in Warehouse2"
-                    )
+            print("Location:")
+            current_date = datetime.today().date()
+            for item in available_w1:
+                days = (
+                    current_date
+                    - datetime.strptime(
+                        item["date_of_stock"], "%Y-%m-%d %H:%M:%S"
+                    ).date()
+                ).days
+                print(f"- Warehouse 1 (in stock for {days} days)")
+            for item in available_w2:
+                days = (
+                    current_date
+                    - datetime.strptime(
+                        item["date_of_stock"], "%Y-%m-%d %H:%M:%S"
+                    ).date()
+                ).days
+                print(f"- Warehouse 2 (in stock for {days} days)")
+
+            if sum_w1 > 0 and sum_w2 > 0:
+                if sum_w1 > sum_w2:  # maximum
+                    print(f"Maximum availability: {sum_w1} in Warehouse1")
                 else:
-                    print(
-                        f"Both warehouses have the same amount of {item_input} in stock."
-                    )
+                    print(f"Maximum availability: {sum_w2} in Warehouse2")
 
-            elif available_w1 > 0:  # warehouse1 or warehouse2
-                print("Location: Warehouse1")
-            else:
-                print("Location: Warehouse2")
-
+            print()
             # order decision:
             order_decision = input("Would you like to place an order? (y/n): ")
 
             if order_decision == "y":
                 order_amount = int(
-                    input(f"How many {item_input} would you like to order?  ")
+                    input(f"How many '{item_input}' would you like to order?  ")
                 )
                 if order_amount > sum_available:
                     order_amount_correction = input(
-                        f"Sorry, your order is exceeding our stock. Would you like to order {item_input} (y/n)? "
+                        f"Sorry, your order is exceeding our stock. Would you like to order {sum_available} '{item_input}' (y/n)? "
                     )
                     if order_amount_correction == "y":
                         print(
-                            f"Your order has been placed: {sum_available} {item_input}"
+                            f"Your order has been placed: {sum_available} '{item_input}'"
                         )
                 else:
-                    print(f"Your order has been placed: {order_amount} {item_input}")
+                    print(f"Your order has been placed: {order_amount} '{item_input}'")
         else:
-            print("Sorry, not in stock.")
+            print("Location: Not in stock")
 
     # Else, if they pick 3
     elif operation_input == 3:

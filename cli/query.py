@@ -16,13 +16,8 @@ from datetime import datetime
 
 
 def stock_of_warehouses():
-    result_w1 = []
-    result_w2 = []
-    for item in stock:
-        if item["warehouse"] == 1:
-            result_w1.append(item)
-        if item["warehouse"] == 2:
-            result_w2.append(item)
+    result_w1 = list(filter(lambda item: item["warehouse"] == 1, stock))
+    result_w2 = list(filter(lambda item: item["warehouse"] == 2, stock))
     print("Warehouse 1: ")
     for item in result_w1:
         print(f"- {item['state']} {item['category']}")
@@ -120,12 +115,12 @@ if name_input != None:
     print(
         f"Hello, {name_input}! \nWhat would you like to do? \n1. List items by warehouse \n2. Search an item and place an order \n3. Browse by Category \n4. Quit"
     )
-# while loop to come back to operation selection after operation 1 or 2 or 3
+
 operation_input = None
 while operation_input != 4:
     operation_input = int(input("Please type the number of the operation: "))
 
-    # If they pick 1
+    # # If they pick 1
 
     if operation_input == 1:
         stock_of_warehouses()
@@ -134,23 +129,23 @@ while operation_input != 4:
     elif operation_input == 2:
         item_input = input("What is the name of the item?  ")
         sum_available = search(item_input)
-        # order decision:
+        # # order decision:
         order_decision = input("Would you like to place an order? (y/n): ")
 
         if order_decision == "y":
             order(item_input, sum_available)
 
-    # Else if they pick 3: browse by category
+    # # Else if they pick 3: browse by category
     elif operation_input == 3:
         browse_categories()
-    # def  goodbye
-    # Else, if they pick 4
+
+    # # Else, if they pick 4
     elif operation_input == 4:
-        pass  # to avoid having  "Thanks for your visit" displayed twice
+        pass
     else:
         print("Sorry, the operation entered is not valid.")
-        break  #  to get out of the loop
+        break
 
-# Thank the user for the visit
+# # Thank the user for the visit
 print()
 print(f"Thanks for your visit, {name_input}!")

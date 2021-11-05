@@ -12,7 +12,39 @@ for item in warehouse1:
 from data import stock
 from datetime import datetime
 
+## defining functions
 
+
+def stock_of_warehouses():
+    result_w1 = []
+    result_w2 = []
+    for item in stock:
+        if item["warehouse"] == 1:
+            result_w1.append(item)
+        if item["warehouse"] == 2:
+            result_w2.append(item)
+    print("Warehouse 1: ")
+    for item in result_w1:
+        print(f"- {item['state']} {item['category']}")
+    print()
+    print("Warehouse 2: ")
+    for item in result_w2:
+        print(f"- {item['state']} {item['category']}")
+
+    # total amount of items in stock on each warehouse:
+
+    print(f"Total amount of items in Warehouse 1: {len(result_w1)}")
+    print(f"Total amount of items in Warehouse 2: {len(result_w2)}")
+
+
+# - Zweite function
+
+# if op = 1:
+#     erste function
+# if op = 2:
+#     erste function
+
+# def greeting():
 name_input = input("What is your user name?  ")
 if name_input != None:
     print(
@@ -20,33 +52,18 @@ if name_input != None:
     )
 # while loop to come back to operation selection after operation 1 or 2
 operation_input = None  #  condition variable needs to be defined before the loop
-while operation_input != 3:
+while operation_input != 4:
     operation_input = int(input("Please type the number of the operation: "))
 
     # If they pick 1
+
     if operation_input == 1:
-        result_w1 = []
-        result_w2 = []
-        for item in stock:
-            if item["warehouse"] == 1:
-                result_w1.append(item)
-            if item["warehouse"] == 2:
-                result_w2.append(item)
-        print("Warehouse 1: ")
-        for item in result_w1:
-            print(f"- {item['state']} {item['category']}")
-        print()
-        print("Warehouse 2: ")
-        for item in result_w2:
-            print(f"- {item['state']} {item['category']}")
-
-        # total amount of items in stock on each warehouse:
-
-        print(f"Total amount of items in Warehouse 1: {len(result_w1)}")
-        print(f"Total amount of items in Warehouse 2: {len(result_w2)}")
+        stock_of_warehouses()
 
     # # Else, if they pick 2
     ### Make case insensitive:
+    ### def search
+    ### def make case insensitive <-- decorator
     elif operation_input == 2:
         item_input = input("What is the name of the item?  ")
         available_w1 = []
@@ -82,6 +99,7 @@ while operation_input != 3:
                     print(f"Maximum availability: {sum_w2} in Warehouse2")
 
             print()
+            # ## def order
             # order decision:
             order_decision = input("Would you like to place an order? (y/n): ")
 
@@ -101,7 +119,7 @@ while operation_input != 3:
                     print(f"Your order has been placed: {order_amount} '{item_input}'")
         else:
             print("Location: Not in stock")
-
+    ## browse by category
     # Else if they pick 3: browse by category
     elif operation_input == 3:
         categories = {}
@@ -129,7 +147,7 @@ while operation_input != 3:
                 print(
                     f"{item['state']} {item['category']}, Warehouse {item['warehouse']}"
                 )
-
+    # def  goodbye
     # Else, if they pick 4
     elif operation_input == 4:
         pass  # to avoid having  "Thanks for your visit" displayed twice

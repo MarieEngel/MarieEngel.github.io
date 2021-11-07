@@ -66,9 +66,8 @@ def search(stock, item_input):
                 print(f"Maximum availability: {sum_w1} in Warehouse1")
             else:
                 print(f"Maximum availability: {sum_w2} in Warehouse2")
-
-        else:
-            print("Location: Not in stock")
+    else:
+        print("Location: Not in stock")
     return sum_available
 
 
@@ -128,10 +127,11 @@ def main():
             item_input = input("What is the name of the item?  ")
             sum_available = search(stock, item_input)
 
-            order_decision = input("Would you like to place an order? (y/n): ")
+            if sum_available > 0:
+                order_decision = input("Would you like to place an order? (y/n): ")
 
-            if order_decision == "y":
-                order(item_input, sum_available)
+                if order_decision == "y":
+                    order(item_input, sum_available)
 
         elif operation_input == 3:
             browse_categories(stock)

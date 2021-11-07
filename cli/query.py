@@ -12,8 +12,6 @@ for item in warehouse1:
 from data import stock
 from datetime import datetime
 
-# defining functions
-
 
 def stock_of_warehouses():
     result_w1 = list(filter(lambda item: item["warehouse"] == 1, stock))
@@ -52,7 +50,7 @@ def search(item_input):
     sum_w2 = len(available_w2)
     sum_available = sum_w1 + sum_w2
 
-    if sum_available > 0:  # both warehouses
+    if sum_available > 0:
         print(f"Amount available: {sum_available}")
         print("Location:")
         current_date = datetime.today().date()
@@ -64,7 +62,7 @@ def search(item_input):
             print(f"- Warehouse {item['warehouse']} (in stock for {days} days)")
 
         if sum_w1 > 0 and sum_w2 > 0:
-            if sum_w1 > sum_w2:  # maximum
+            if sum_w1 > sum_w2:
                 print(f"Maximum availability: {sum_w1} in Warehouse1")
             else:
                 print(f"Maximum availability: {sum_w2} in Warehouse2")
@@ -72,12 +70,6 @@ def search(item_input):
         else:
             print("Location: Not in stock")
     return sum_available
-
-
-## item_input and  sum_available are defined in search but needed in order as well:
-## define item_input outside the  function
-# search() takes it as agr & return sum_available
-## order() takes item_input & sum_available as arg
 
 
 def order(item_input, sum_available):
@@ -128,31 +120,26 @@ operation_input = None
 while operation_input != 4:
     operation_input = int(input("Please type the number of the operation: "))
 
-    # # If they pick 1
     if operation_input == 1:
         stock_of_warehouses()
 
-    # # Else, if they pick 2
     elif operation_input == 2:
         item_input = input("What is the name of the item?  ")
         sum_available = search(item_input)
-        # # order decision:
+
         order_decision = input("Would you like to place an order? (y/n): ")
 
         if order_decision == "y":
             order(item_input, sum_available)
 
-    # # Else if they pick 3: browse by category
     elif operation_input == 3:
         browse_categories()
 
-    # # Else, if they pick 4
     elif operation_input == 4:
         pass
     else:
         print("Sorry, the operation entered is not valid.")
         break
 
-# # Thank the user for the visit
 print()
 print(f"Thanks for your visit, {name_input}!")

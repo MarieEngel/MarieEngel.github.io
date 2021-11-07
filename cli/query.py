@@ -31,14 +31,22 @@ def stock_of_warehouses():
 
 
 def search(item_input):
-    available_w1 = []
-    available_w2 = []
-    for item in stock:
-        if item_input.lower() == f"{item['state']} {item['category']}".lower():
-            if item["warehouse"] == 1:
-                available_w1.append(item)
-            if item["warehouse"] == 2:
-                available_w2.append(item)
+    available_w1 = list(
+        filter(
+            lambda item: item_input.lower()
+            == f"{item['state']} {item['category']}".lower()
+            and item["warehouse"] == 1,
+            stock,
+        )
+    )
+    available_w2 = list(
+        filter(
+            lambda item: item_input.lower()
+            == f"{item['state']} {item['category']}".lower()
+            and item["warehouse"] == 2,
+            stock,
+        )
+    )
 
     sum_w1 = len(available_w1)
     sum_w2 = len(available_w2)
@@ -121,7 +129,6 @@ while operation_input != 4:
     operation_input = int(input("Please type the number of the operation: "))
 
     # # If they pick 1
-
     if operation_input == 1:
         stock_of_warehouses()
 

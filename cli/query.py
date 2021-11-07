@@ -13,7 +13,7 @@ from data import stock
 from datetime import datetime
 
 
-def stock_of_warehouses():
+def stock_of_warehouses(stock):
     result_w1 = list(filter(lambda item: item["warehouse"] == 1, stock))
     result_w2 = list(filter(lambda item: item["warehouse"] == 2, stock))
     print("Warehouse 1: ")
@@ -28,7 +28,7 @@ def stock_of_warehouses():
     print(f"Total amount of items in Warehouse 2: {len(result_w2)}")
 
 
-def search(item_input):
+def search(stock, item_input):
     available_w1 = list(
         filter(
             lambda item: item_input.lower()
@@ -84,7 +84,7 @@ def order(item_input, sum_available):
         print(f"Your order has been placed: {order_amount} '{item_input}'")
 
 
-def browse_categories():
+def browse_categories(stock):
     categories = {}
     for item in stock:
         key = item["category"]
@@ -110,36 +110,41 @@ def browse_categories():
             print(f"{item['state']} {item['category']}, Warehouse {item['warehouse']}")
 
 
-name_input = input("What is your user name?  ")
-if name_input != None:
-    print(
-        f"Hello, {name_input}! \nWhat would you like to do? \n1. List items by warehouse \n2. Search an item and place an order \n3. Browse by Category \n4. Quit"
-    )
+def main():
+    name_input = input("What is your user name?  ")
+    if name_input != None:
+        print(
+            f"Hello, {name_input}! \nWhat would you like to do? \n1. List items by warehouse \n2. Search an item and place an order \n3. Browse by Category \n4. Quit"
+        )
 
-operation_input = None
-while operation_input != 4:
-    operation_input = int(input("Please type the number of the operation: "))
+    operation_input = None
+    while operation_input != 4:
+        operation_input = int(input("Please type the number of the operation: "))
 
-    if operation_input == 1:
-        stock_of_warehouses()
+        if operation_input == 1:
+            stock_of_warehouses(stock)
 
-    elif operation_input == 2:
-        item_input = input("What is the name of the item?  ")
-        sum_available = search(item_input)
+        elif operation_input == 2:
+            item_input = input("What is the name of the item?  ")
+            sum_available = search(stock, item_input)
 
-        order_decision = input("Would you like to place an order? (y/n): ")
+            order_decision = input("Would you like to place an order? (y/n): ")
 
-        if order_decision == "y":
-            order(item_input, sum_available)
+            if order_decision == "y":
+                order(item_input, sum_available)
 
-    elif operation_input == 3:
-        browse_categories()
+        elif operation_input == 3:
+            browse_categories(stock)
 
-    elif operation_input == 4:
-        pass
-    else:
-        print("Sorry, the operation entered is not valid.")
-        break
+        elif operation_input == 4:
+            pass
+        else:
+            print("Sorry, the operation entered is not valid.")
+            break
 
-print()
-print(f"Thanks for your visit, {name_input}!")
+    print()
+    print(f"Thanks for your visit, {name_input}!")
+
+
+if __name__ == "__main__":
+    main()

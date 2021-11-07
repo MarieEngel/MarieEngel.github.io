@@ -1,19 +1,11 @@
 #!/usr/bin/env python3
 
-"""Command line interface to query the stock.
-
-To iterate the source data you can use the following structure:
-
-for item in warehouse1:
-    # Your instructions here.
-    # The `item` name will contain each of the strings (item names) in the list.
-"""
-
 from data import stock
 from datetime import datetime
 
 
-def stock_of_warehouses(stock):
+def stock_of_warehouses(stock: list):
+    """Prints the list of items and their total amount sorted by warehouse."""
     result_w1 = list(filter(lambda item: item["warehouse"] == 1, stock))
     result_w2 = list(filter(lambda item: item["warehouse"] == 2, stock))
     print("Warehouse 1: ")
@@ -28,7 +20,9 @@ def stock_of_warehouses(stock):
     print(f"Total amount of items in Warehouse 2: {len(result_w2)}")
 
 
-def search(stock, item_input):
+def search(stock: list, item_input: str):
+    """Prints the total availability, days in stock, warehouse with max availability.
+    Returns the total availability."""
     available_w1 = list(
         filter(
             lambda item: item_input.lower()
@@ -71,7 +65,8 @@ def search(stock, item_input):
     return sum_available
 
 
-def order(item_input, sum_available):
+def order(item_input: str, sum_available: int):
+    """Asks for the amount to order, compares with availability and prints the placed order."""
     order_amount = int(input(f"How many '{item_input}' would you like to order?  "))
     if order_amount > sum_available:
         order_amount_correction = input(
@@ -83,7 +78,8 @@ def order(item_input, sum_available):
         print(f"Your order has been placed: {order_amount} '{item_input}'")
 
 
-def browse_categories(stock):
+def browse_categories(stock: list):
+    """Prints the list of categories with id. Asks the category id to browse and prints the list items with location."""
     categories = {}
     for item in stock:
         key = item["category"]
@@ -110,6 +106,7 @@ def browse_categories(stock):
 
 
 def main():
+    """Entry point to the program."""
     name_input = input("What is your user name?  ")
     if name_input != None:
         print(

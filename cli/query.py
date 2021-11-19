@@ -3,6 +3,23 @@
 from data import stock
 from datetime import datetime
 
+name_input = ""
+
+
+def get_user_name():
+    """Gets the users name."""
+    global name_input
+    if not name_input:
+        name_input = input("What is your user name?  ")
+    return name_input
+
+
+def greet_user():
+    """Greets the user by name & displays the options to select from."""
+    print(
+        f"Hello, {get_user_name()}! \nWhat would you like to do? \n1. List items by warehouse \n2. Search an item and place an order \n3. Browse by Category \n4. Quit"
+    )
+
 
 def stock_of_warehouses(stock: list):
     """Prints the list of items and their total amount sorted by warehouse."""
@@ -107,11 +124,14 @@ def browse_categories(stock: list):
 
 def main():
     """Entry point to the program."""
-    name_input = input("What is your user name?  ")
-    if name_input != None:
-        print(
-            f"Hello, {name_input}! \nWhat would you like to do? \n1. List items by warehouse \n2. Search an item and place an order \n3. Browse by Category \n4. Quit"
-        )
+    # name_input = input("What is your user name?  ")
+    # if name_input != None:
+    #     print(
+    #         f"Hello, {name_input}! \nWhat would you like to do? \n1. List items by warehouse \n2. Search an item and place an order \n3. Browse by Category \n4. Quit"
+    # )
+    get_user_name()
+
+    greet_user()
 
     operation_input = None
     while operation_input != 4:

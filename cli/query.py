@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from _typeshed import WriteableBuffer
 from data import stock
 from datetime import datetime
 
@@ -37,49 +38,59 @@ def stock_of_warehouses(stock: list):
     print(f"Total amount of items in Warehouse 2: {len(result_w2)}")
 
 
+def list_available_by_warehouse(stock: list, item_input: str, warehouse_num: int):
+    return list(
+        filter(
+            lambda item: item_input.lower()
+            == f"{item['state']} {item['category']}".lower()
+            and item["warehouse"] == warehouse_num,
+            stock,
+        )
+    )
+
+
 def search(stock: list, item_input: str):
     """Prints the total availability, days in stock, warehouse with max availability.
     Returns the total availability."""
-    available_w1 = list(
-        filter(
-            lambda item: item_input.lower()
-            == f"{item['state']} {item['category']}".lower()
-            and item["warehouse"] == 1,
-            stock,
-        )
-    )
-    available_w2 = list(
-        filter(
-            lambda item: item_input.lower()
-            == f"{item['state']} {item['category']}".lower()
-            and item["warehouse"] == 2,
-            stock,
-        )
-    )
+    available_w1 = list_available_by_warehouse(stock, item_input, 1)
+    available_w2 = list_available_by_warehouse(stock, item_input, 2)
 
-    sum_w1 = len(available_w1)
-    sum_w2 = len(available_w2)
-    sum_available = sum_w1 + sum_w2
+    result = {
+        "Warehouse 1": available_w1,
+        "Warehouse 2": available_w2,
+        "Sum": len(available_w1) + len(available_w2),
+    }
 
-    if sum_available > 0:
-        print(f"Amount available: {sum_available}")
+    return result
+
+
+def print_search_results(search_results: dict):
+    if search_results["Sum"] > 0:
+
+        print(f"Amount available: {search_results['Sum']}")
         print("Location:")
         current_date = datetime.today().date()
-        for item in available_w1 + available_w2:
+        for item in search_results["Warehouse 1"] + search_results["Warehouse 2"]:
             days = (
                 current_date
                 - datetime.strptime(item["date_of_stock"], "%Y-%m-%d %H:%M:%S").date()
             ).days
             print(f"- Warehouse {item['warehouse']} (in stock for {days} days)")
 
-        if sum_w1 > 0 and sum_w2 > 0:
-            if sum_w1 > sum_w2:
-                print(f"Maximum availability: {sum_w1} in Warehouse1")
+        if (
+            len(search_results["Warehouse 1"]) > 0
+            and len(search_results["Warehouse 2"]) > 0
+        ):
+            if len(search_results["Warehouse 1"]) > len(search_results["Warehouse 2"]):
+                print(
+                    f"Maximum availability: {len(search_results['Warehouse 1'])} in Warehouse1"
+                )
             else:
-                print(f"Maximum availability: {sum_w2} in Warehouse2")
+                print(
+                    f"Maximum availability: {len(search_results['Warehouse 2'])} in Warehouse2"
+                )
     else:
         print("Location: Not in stock")
-    return sum_available
 
 
 def order(item_input: str, sum_available: int):
@@ -142,13 +153,14 @@ def main():
 
         elif operation_input == 2:
             item_input = input("What is the name of the item?  ")
-            sum_available = search(stock, item_input)
+            search_results = search(stock, item_input)
+            print_search_results(search_results)
 
-            if sum_available > 0:
+            if search_results["Sum"] > 0:
                 order_decision = input("Would you like to place an order? (y/n): ")
 
                 if order_decision == "y":
-                    order(item_input, sum_available)
+                    order(item_input, search_results["Sum"])
 
         elif operation_input == 3:
             browse_categories(stock)

@@ -18,8 +18,7 @@ def greet_user(name: str):
 
 
 def search(stock: list, predicate: Callable[[dict], bool]):
-    """Prints the total availability, days in stock, warehouse with max availability.
-    Returns the total availability."""
+    """Filters the items by warehouse and saves them in a dict [warehouse, list of items]."""
     result: dict[int, list] = {}
 
     for item in stock:
@@ -34,7 +33,7 @@ def search(stock: list, predicate: Callable[[dict], bool]):
 
 
 def list_items_by_warehouse(warehouses: dict[int, list]):
-    """Prints the list of items and their total amount sorted by warehouse."""
+    """Prints the list of items by warehouse and the total amount of items by warehouse."""
     for warehouse, items in warehouses.items():
         print(f"Warehouse {warehouse}: ")
         for item in items:
@@ -45,6 +44,7 @@ def list_items_by_warehouse(warehouses: dict[int, list]):
 
 
 def print_search_results(warehouses: dict[int, list], amount: int):
+    """For the searched item prints for each item, in which warehouse and for how many days it has been stored."""
     if amount > 0:
         print(f"Amount available: {amount}")
         print("Location:")

@@ -1,94 +1,72 @@
 #!/usr/bin/env python3
 
-from _typeshed import WriteableBuffer
+from typing import Callable
 from data import stock
 from datetime import datetime
-
-name_input = ""
 
 
 def get_user_name():
     """Gets the users name."""
-    global name_input
-    if not name_input:
-        name_input = input("What is your user name?  ")
-    return name_input
+    return input("What is your user name?  ")
 
 
-def greet_user():
+def greet_user(name: str):
     """Greets the user by name & displays the options to select from."""
     print(
-        f"Hello, {get_user_name()}! \nWhat would you like to do? \n1. List items by warehouse \n2. Search an item and place an order \n3. Browse by Category \n4. Quit"
+        f"Hello, {name}! \nWhat would you like to do? \n1. List items by warehouse \n2. Search an item and place an order \n3. Browse by Category \n4. Quit"
     )
 
 
-def stock_of_warehouses(stock: list):
-    """Prints the list of items and their total amount sorted by warehouse."""
-    result_w1 = list(filter(lambda item: item["warehouse"] == 1, stock))
-    result_w2 = list(filter(lambda item: item["warehouse"] == 2, stock))
-    print("Warehouse 1: ")
-    for item in result_w1:
-        print(f"- {item['state']} {item['category']}")
-    print()
-    print("Warehouse 2: ")
-    for item in result_w2:
-        print(f"- {item['state']} {item['category']}")
-
-    print(f"Total amount of items in Warehouse 1: {len(result_w1)}")
-    print(f"Total amount of items in Warehouse 2: {len(result_w2)}")
-
-
-def list_available_by_warehouse(stock: list, item_input: str, warehouse_num: int):
-    return list(
-        filter(
-            lambda item: item_input.lower()
-            == f"{item['state']} {item['category']}".lower()
-            and item["warehouse"] == warehouse_num,
-            stock,
-        )
-    )
-
-
-def search(stock: list, item_input: str):
+def search(stock: list, predicate: Callable[[dict], bool]):
     """Prints the total availability, days in stock, warehouse with max availability.
     Returns the total availability."""
-    available_w1 = list_available_by_warehouse(stock, item_input, 1)
-    available_w2 = list_available_by_warehouse(stock, item_input, 2)
+    result: dict[int, list] = {}
 
-    result = {
-        "Warehouse 1": available_w1,
-        "Warehouse 2": available_w2,
-        "Sum": len(available_w1) + len(available_w2),
-    }
+    for item in stock:
+        if predicate(item):
+            warehouse = item["warehouse"]
+            if warehouse not in result:
+                result[warehouse] = [item]
+            else:
+                result[warehouse].append(item)
 
     return result
 
 
-def print_search_results(search_results: dict):
-    if search_results["Sum"] > 0:
+def list_items_by_warehouse(warehouses: dict[int, list]):
+    """Prints the list of items and their total amount sorted by warehouse."""
+    for warehouse, items in warehouses.items():
+        print(f"Warehouse {warehouse}: ")
+        for item in items:
+            print(f"- {item['state']} {item['category']}")
 
-        print(f"Amount available: {search_results['Sum']}")
+    for warehouse, items in warehouses.items():
+        print(f"Total amount of items in Warehouse {warehouse}: {len(items)}")
+
+
+def print_search_results(warehouses: dict[int, list], amount: int):
+    if amount > 0:
+        print(f"Amount available: {amount}")
         print("Location:")
         current_date = datetime.today().date()
-        for item in search_results["Warehouse 1"] + search_results["Warehouse 2"]:
-            days = (
-                current_date
-                - datetime.strptime(item["date_of_stock"], "%Y-%m-%d %H:%M:%S").date()
-            ).days
-            print(f"- Warehouse {item['warehouse']} (in stock for {days} days)")
+        for items in warehouses.values():
+            for item in items:
+                days = (
+                    current_date
+                    - datetime.strptime(
+                        item["date_of_stock"], "%Y-%m-%d %H:%M:%S"
+                    ).date()
+                ).days
+                print(f"- Warehouse {item['warehouse']} (in stock for {days} days)")
 
-        if (
-            len(search_results["Warehouse 1"]) > 0
-            and len(search_results["Warehouse 2"]) > 0
-        ):
-            if len(search_results["Warehouse 1"]) > len(search_results["Warehouse 2"]):
-                print(
-                    f"Maximum availability: {len(search_results['Warehouse 1'])} in Warehouse1"
-                )
-            else:
-                print(
-                    f"Maximum availability: {len(search_results['Warehouse 2'])} in Warehouse2"
-                )
+        max_availability = 0
+        max_warehouse = 0
+        for warehouse, items in warehouses.items():
+            if len(items) > max_availability:
+                max_availability = len(items)
+                max_warehouse = warehouse
+
+        print(f"Maximum availability: {max_availability} in Warehouse {max_warehouse}")
     else:
         print("Location: Not in stock")
 
@@ -135,32 +113,34 @@ def browse_categories(stock: list):
 
 def main():
     """Entry point to the program."""
-    # name_input = input("What is your user name?  ")
-    # if name_input != None:
-    #     print(
-    #         f"Hello, {name_input}! \nWhat would you like to do? \n1. List items by warehouse \n2. Search an item and place an order \n3. Browse by Category \n4. Quit"
-    # )
-    get_user_name()
-
-    greet_user()
+    username = get_user_name()
+    greet_user(username)
 
     operation_input = None
     while operation_input != 4:
         operation_input = int(input("Please type the number of the operation: "))
 
         if operation_input == 1:
-            stock_of_warehouses(stock)
+            warehouses = search(stock, lambda i: True)
+            list_items_by_warehouse(warehouses)
 
         elif operation_input == 2:
             item_input = input("What is the name of the item?  ")
-            search_results = search(stock, item_input)
-            print_search_results(search_results)
+            warehouses = search(
+                stock,
+                lambda i: f"{i['state']} {i['category']}".lower() == item_input.lower(),
+            )
 
-            if search_results["Sum"] > 0:
+            amount = 0
+            for items in warehouses.values():
+                amount += len(items)
+            print_search_results(warehouses, amount)
+
+            if amount > 0:
                 order_decision = input("Would you like to place an order? (y/n): ")
 
                 if order_decision == "y":
-                    order(item_input, search_results["Sum"])
+                    order(item_input, amount)
 
         elif operation_input == 3:
             browse_categories(stock)
@@ -172,7 +152,7 @@ def main():
             break
 
     print()
-    print(f"Thanks for your visit, {name_input}!")
+    print(f"Thanks for your visit, {username}!")
 
 
 if __name__ == "__main__":

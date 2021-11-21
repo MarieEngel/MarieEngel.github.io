@@ -84,7 +84,7 @@ def order(item_input: str, sum_available: int):
         print(f"Your order has been placed: {order_amount} '{item_input}'")
 
 
-def browse_categories(stock: list):
+def list_categories(stock: list):
     """Prints the list of categories with id. Asks the category id to browse and prints the list items with location."""
     categories = {}
     for item in stock:
@@ -98,24 +98,29 @@ def browse_categories(stock: list):
     for pair in categories.items():
         categories_list.append(pair)
 
-    for (i, category) in enumerate(categories_list, start=1):
+    for i, category in enumerate(categories_list, start=1):
         print(f"{i}. {category[0]} ({category[1]})")
 
+    return categories_list
+
+
+def choose_category(stock: list, categories_list: list):
     choice_input = int(input("Type the number of the category to browse: "))
 
-    chosen_category = categories_list[(choice_input - 1)]
+    chosen_category = categories_list[choice_input - 1]
     print(f"List of '{chosen_category[0]}' available: ")
 
     for item in stock:
         if item["category"] == chosen_category[0]:
             print(f"{item['state']} {item['category']}, Warehouse {item['warehouse']}")
+    return chosen_category
 
 
 def main():
     """Entry point to the program."""
     username = get_user_name()
     greet_user(username)
-
+    recorded_actions = []
     operation_input = None
     while operation_input != 4:
         operation_input = int(input("Please type the number of the operation: "))
@@ -123,6 +128,7 @@ def main():
         if operation_input == 1:
             warehouses = search(stock, lambda i: True)
             list_items_by_warehouse(warehouses)
+            recorded_actions.append(f"Listed {len(stock)} items.")
 
         elif operation_input == 2:
             item_input = input("What is the name of the item?  ")
@@ -141,9 +147,12 @@ def main():
 
                 if order_decision == "y":
                     order(item_input, amount)
+            recorded_actions.append(f"Searched for {item_input.capitalize()}.")
 
         elif operation_input == 3:
-            browse_categories(stock)
+            categories_list = list_categories(stock)
+            chosen_category = choose_category(stock, categories_list)
+            recorded_actions.append(f"Browsed the category {chosen_category[0]}")
 
         elif operation_input == 4:
             pass
@@ -153,6 +162,9 @@ def main():
 
     print()
     print(f"Thanks for your visit, {username}!")
+    print("In this session you have:")
+    for i, action in enumerate(recorded_actions, start=1):
+        print(f"{i}. {action}")
 
 
 if __name__ == "__main__":
